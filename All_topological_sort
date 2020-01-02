@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+using namespace std;
+vector<int> q;
+int n,cont=1;
+void all_topological(vector<vector<int>> &v,vector<int> &in_deg,vector<bool> &visited){
+	for(int i=1;i<in_deg.size();i++){
+		if(in_deg[i]==0 and !visited[i]){
+			q.push_back(i);
+			visited[i]=true;
+			for(int j=0;j<v[i].size();j++){
+				in_deg[v[i][j]]--;
+			}
+			all_topological(v,in_deg,visited);
+			q.pop_back();
+			visited[i]=false;
+			for(int j=0;j<v[i].size();j++){
+				in_deg[v[i][j]]++;
+			}
+		}
+	}
+	if(q.size()==n){
+		cout<<"Case "<<cont<<": ";
+		for(int k=0;k<q.size();k++){
+			cout<<q[k]<<" ";
+		}
+		cont++;
+		cout<<endl;
+	}
+}
+int main() {
+	int m;
+	cin>>n>>m;
+	vector<vector<int>> v(n+1);
+	for(int i=0;i<m;i++){
+		int x,y;
+		cin>>x>>y;
+		v[x].push_back(y);
+	}
+	vector<int> in_deg(n+1);
+	for(int i=1;i<=n;i++){
+		for(int j=0;j<v[i].size();j++){
+			in_deg[v[i][j]]++;
+		}
+	}
+	vector<bool> visited(n+1,false);
+	all_topological(v,in_deg,visited);
+	return 0;
+}

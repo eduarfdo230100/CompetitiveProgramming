@@ -1,0 +1,71 @@
+#include <bits/stdc++.h>
+using namespace std;
+vector<int> maxheap(1,-1);
+int parent(int i){
+	return (i>>1);
+}
+int left(int i){
+	return (i<<1);
+}
+int right(int i){
+	return (i<<1)+1;
+}
+void subida(int i){
+	while(i!=1){
+		if(maxheap[parent(i)]<maxheap[i]){
+			swap(maxheap[parent(i)],maxheap[i]);
+		}
+		else{
+			break;
+		}
+		i=parent(i);
+	}
+}
+void insert(int x){
+	maxheap.push_back(x);
+	subida(maxheap.size()-1);
+}
+void bajada(int i){
+	if(right(i)>=maxheap.size()){
+		return;
+	}
+	while(maxheap[i]<maxheap[left(i)] or maxheap[i]<maxheap[right(i)]){
+		int pos;
+		if(maxheap[left(i)]>=maxheap[right(i)]){
+			pos=left(i);
+		}
+		else{
+			pos=right(i);
+		}
+		swap(maxheap[i],maxheap[pos]);
+		i=pos;
+		if(right(i)>=maxheap.size()){
+			break;
+		}
+	}
+}
+void delet(int k){
+	maxheap[k]=INT_MAX;
+	subida(k);
+	maxheap[1]=maxheap[maxheap.size()-1];
+	bajada(1);
+	maxheap.erase(maxheap.begin()+maxheap.size()-1);
+}
+int main() {
+	int n,x,k;
+	cin>>n>>k;
+	for(int i=0;i<n;i++){
+		cin>>x;
+		insert(x);
+	}
+	for(int i=1;i<=n;i++){
+		cout<<maxheap[i]<<" ";
+	}
+	cout<<endl;
+	delet(k);
+	for(int i=1;i<n;i++){
+		cout<<maxheap[i]<<" ";
+	}
+	cout<<endl<<maxheap.size()-1;
+	return 0;
+}

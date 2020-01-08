@@ -1,0 +1,60 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define pb push_back
+queue<pair<int,int>> q;
+ll k,palice=0,pbob=0;
+int a,b;
+vector<vector<bool>> visited(4,vector<bool>(4,false));
+vector<vector<int>> a(4,vector<int>(4)),b(4,vector<int>(4));
+dfs(int x,int y,int fx,int fy){
+	visited[x][y]=true;
+	if(x>y){
+		palice++;
+	}
+	if(x<y){
+		pbob++;
+	}
+	q.push(pair<int,int>(x,y));
+	k--;
+	if(!visited[a[x][y]][b[x][y]]){
+		dfs(a[x][y],b[x][y],a,b);
+	}
+	else if(a[x][y]!=fx and b[x][y]!=fy){
+		while(1){
+			if(q.front().first==a[x][y] and q.front().second==b[x][y]){
+				break;
+			}
+			q.pop();
+		}
+		ll cyclea=0,cycleb=0;
+		int scycle=q.size();
+		while(!q.empty()){
+			if(q.front().first>q.front().second){
+				cyclea++;
+			}
+			if(q.front().first<q.front().second){
+				cycleb++;
+			}
+			q.pop();
+		}
+		cyclea=(k/scycle)*cyclea;
+		cycleb=(k/scycle)*cycleb;
+		k=k-(k/scycle)*
+	}
+}
+int main() {
+	cin>>k>>a>>b;
+	for(int i=1;i<=3;i++){
+		for(int j=1;j<=3;j++){
+				cin>>a[i][j];
+		}
+	}
+	for(int i=1;i<=3;i++){
+		for(int j=1;j<=3;j++){
+				cin>>b[i][j];
+		}
+	}
+	dfs(a,b,-1,-1);
+	return 0;
+}

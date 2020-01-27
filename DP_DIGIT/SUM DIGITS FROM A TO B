@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define ll long long
+#define pb push_back
+#define mp make_pair
+using namespace std;
+int dp[20][200][3];
+void getdigits(ll num,vector<int> &v){
+	while(1){
+		v.pb(num%10);
+		num/=10;
+		if(num==0) break;
+	}
+}
+ll exe(int idx,int sum,int tight,vector<int>&v){
+	if(idx==-1) return sum*1LL;
+	if(dp[idx][sum][tight]!=-1 and tight==0) return dp[idx][sum][tight];
+	ll aux=0;
+	fore(i,0,int((tight)? (v[idx]+1):10)){
+		int newtight=(v[idx]==i and tight)? 1:0;
+		aux+=exe(idx-1,sum+i,newtight,v);
+	}
+	if(tight==0) dp[idx][sum][tight]=aux;
+	return aux;
+}
+void f(ll a,ll b){
+	vector<int> A,B;
+	getdigits(a-1,A);
+	getdigits(b,B);
+	cout<<exe(int(B.size())-1,0,1,B)-exe(int(A.size())-1,0,1,A);
+}
+int main() {
+	ll a,b;
+	memset(dp,-1,sizeof(dp));
+	cin>>a>>b;
+	f(a,b);
+	return 0;
+}

@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define mp make_pair
+#define vi vector<int>
+#define vll vector<ll>
+#define vvi vector<vector<int>>
+#define fore(i,a,b) for(int i=a;i<b;i++)
+using namespace std;
+int der(int i) {
+	return (i<<1)+1;
+}
+int izq(int i){
+	return (i<<1);
+}
+void lazy(int a,int b,int node,vi &ST,vi &LT,int A,int B,int k,int n){
+	if(LT[node]!=0){
+		ST[node]+=LT[node];
+		LT[izq(node)]+=LT[node];
+		LT[der(node)]+=LT[node];
+		LT[node]=0;
+	}
+	if(a<=A and B<=b) {
+		ST[node]+=k;
+		if(node<n){
+			LT[izq(node)]+=k;
+			LT[der(node)]+=k;
+		}
+	} 
+}
+int main() {
+	//Se tiene de entrada n números (pot de 2). Se halla el segment tree del mínimo elemento.
+	//Se aplica lazy propagation para cada query y se le adiciona k a los elementos de un rango.
+	int n,q;
+	cin>>n>>q;
+	vi ST(2*n),LT(2*n);
+	fore(i,n,2*n) cin>>ST[i];
+	for(int i=n-1;i>=1;i--){
+		ST[i]=min(izq(i),der(i));
+	}
+	fore(i,0,q){
+		int a,b,k;
+		cin>>a>>b>>k;
+		lazy(a,b,1,ST,LT,0,n,k,n);
+	}
+	
+	return 0;
+}

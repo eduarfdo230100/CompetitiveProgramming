@@ -12,7 +12,7 @@ int der(int i) {
 int izq(int i){
 	return (i<<1);
 }
-void lazy(int a,int b,int node,vi &ST,vi &LT,int A,int B,int k,int n){
+int lazy(int a,int b,int node,vi &ST,vi &LT,int A,int B,int k,int n){
 	if(LT[node]!=0){
 		ST[node]+=LT[node];
 		LT[izq(node)]+=LT[node];
@@ -25,7 +25,10 @@ void lazy(int a,int b,int node,vi &ST,vi &LT,int A,int B,int k,int n){
 			LT[izq(node)]+=k;
 			LT[der(node)]+=k;
 		}
+		return ST[node];
 	} 
+	if(B<=a or b<=A) return INT_MAX;
+	return min(lazy(a,b,izq(node),ST,LT,A,(A+B)/2,k,n),lazy(a,b,der(node),ST,LT,(A+B)/2,B,k,n));
 }
 int main() {
 	//Se tiene de entrada n números (pot de 2). Se halla el segment tree del mínimo elemento.
@@ -40,8 +43,7 @@ int main() {
 	fore(i,0,q){
 		int a,b,k;
 		cin>>a>>b>>k;
-		lazy(a,b,1,ST,LT,0,n,k,n);
+		cout<<lazy(a,b,1,ST,LT,0,n,k,n)<<endl;
 	}
-	
 	return 0;
 }

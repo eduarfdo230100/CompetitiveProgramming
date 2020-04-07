@@ -1,0 +1,65 @@
+#include <bits/stdc++.h>
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define vi vector<int>
+using namespace std;
+struct TrieNode{
+	TrieNode* children[26];
+	bool leaf=false;
+};
+TrieNode* CreateNode(){
+	TrieNode* pt=new TrieNode;
+	fore(i,0,26) pt->children[i]=NULL;
+	return pt;
+}
+void insert(string s,TrieNode* pt){
+	int n=s.size();
+	fore(i,0,n){
+		int idx=s[i]-'a';
+		if(pt->children[idx]==NULL) pt->children[idx]=CreateNode();
+		pt=pt->children[idx];
+	}
+	pt->leaf=true;
+}
+bool search(string s,TrieNode* pt){
+	int n=s.size();
+	fore(i,0,n){
+		int idx=s[i]-'a';
+		if(pt->children[idx]==NULL) return false;
+		pt=pt->children[idx];
+	}
+	if(! pt->leaf) return false;
+	return true;
+}
+bool valid(TrieNode* pt){
+	fore(i,0,26) if(pt->children[i]!=NULL) return false;
+	return true;
+}
+TrieNode* fdelete(string s,TrieNode* pt,int idx){
+	if(idx==s.size()){
+		pt->leaf=false;
+		if(valid(pt)){
+			delete(pt);
+			pt=NULL;
+		}
+		return pt;
+	}
+	pt->children[int(s[idx]-'a')]=fdelete(s,pt->children[int(s[idx]-'a')],idx+1);
+	if(valid(pt)){
+		delete(pt);
+		pt=NULL;
+		return pt;
+	}
+	return pt;
+}
+int main() {
+	string s[3]={"valeria","paloma","mar"},p="edu";
+	TrieNode* root=CreateNode();
+	fore(i,0,3) insert(s[i],root);
+	if(search(p,root)) cout<<"YES"<<endl;
+	else cout<<"NO"<<endl;
+	root=fdelete(s[0],root,0);
+	if(search(s[0],root)) cout<<"YES"<<endl;
+	else cout<<"NO";
+	
+	return 0;
+}

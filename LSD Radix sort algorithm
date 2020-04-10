@@ -1,0 +1,30 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define vll vector<ll> 
+#define vi vector<int>
+#define all(x) x.begin(),x.end()
+#define fore(i,a,b) for(int i=a;i<b;i++)
+using namespace std;
+void compare(ll idx,vll &v,int n){
+	vi rep(10);
+	vll aux=v;
+	fore(i,0,n) rep[(aux[i]/idx)%10]++;
+	fore(i,1,10) rep[i]+=rep[i-1];
+	for(int i=n-1;i>=0;i--) {
+		v[rep[(aux[i]/idx)%10]-1]=aux[i];
+		rep[(aux[i]/idx)%10]--;	
+	}
+}
+void radixsort(ll maxi,vll &v,int n){
+	for(ll idx=1;maxi/idx>0;idx*=10) compare(idx,v,n);
+}
+int main() {
+	int n;
+	cin>>n;
+	vll v(n);
+	fore(i,0,n) cin>>v[i];
+	ll maxi=*max_element(all(v));
+	radixsort(maxi,v,n);
+	fore(i,0,n) cout<<v[i]<<" ";
+	return 0;
+}

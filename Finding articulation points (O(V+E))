@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+#define vi vector<int>
+#define vvi vector<vector<int>>
+#define ll long long
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define vll vector<ll>
+#define pb push_back
+using namespace std;
+int n,m,timer;
+vvi adj;
+vi tin,low;
+vector<bool> visited,art_points;
+void dfs(int node,int p){
+	visited[node]=true;
+	tin[node]=low[node]=timer++;
+	int ch=0;
+	for(auto to:adj[node]){
+		if(to==p) continue;
+		if(visited[to]) low[node]=min(low[node],tin[to]);
+		else{
+			dfs(to,node);
+			++ch;
+			low[node]=min(low[node],low[to]);
+			if(low[to]>=tin[node] and p!=-1) art_points[node]=true; 
+		}
+	}
+	if(ch>1 and p==-1) art_points[node]=true;
+}
+int main() {
+	cin>>n>>m;
+	adj.assign(n,vi());	
+	visited.assign(n,false);
+	art_points.assign(n,false);
+	tin.assign(n,-1);
+	low.assign(n,-1);
+	fore(i,0,m) {
+		int x,y;
+		cin>>x>>y;
+		adj[x].pb(y);
+		adj[y].pb(x);
+	}
+	timer=0;
+	cout<<"Articulation points:"<<endl;
+	fore(i,0,n) if(!visited[i]) dfs(i,-1);
+	fore(i,0,n) if(art_points[i]) cout<<i<<endl;
+	return 0;
+}

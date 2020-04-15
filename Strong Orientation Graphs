@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+#define vi vector<int>
+#define vvi vector<vector<int>>
+#define ll long long
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define vll vector<ll>
+#define pb push_back
+#define mp make_pair
+#define fst first
+#define snd second
+#define pi pair<int,int> 
+using namespace std;
+int n,m,timer=0,nbridges=0;
+vector<vector<pi>> adj;
+vector<pi> edges;
+vi tin,low;
+vector<bool> visited;
+string orientation;
+void dfs(int node){
+	tin[node]=low[node]=timer++;
+	for(auto to:adj[node]){
+		if(visited[to.snd]) continue;
+		visited[to.snd]=true;
+		orientation[to.snd]=(node==edges[to.snd].fst)? '>':'<';
+		if(tin[to.fst]==-1){
+			dfs(to.fst);
+			low[node]=min(low[node],low[to.fst]);
+			if(low[to.fst]>tin[node]) nbridges++;
+		}
+		else low[node]=min(low[node],tin[to.fst]);
+	}
+}
+int main() {
+	cin>>n>>m;
+	adj.resize(n);
+	edges.resize(m);
+	fore(i,0,m) {
+		int x,y;
+		cin>>x>>y;
+		adj[x].pb(mp(y,i));
+		adj[y].pb(mp(x,i));
+		edges[i].fst=x;
+		edges[i].snd=y;
+	}
+	tin.resize(n,-1);
+	low.resize(n,-1);
+	visited.resize(n,false);
+	orientation.resize(m);
+	int ndfs=0;
+	fore(node,0,n) if(tin[node]==-1){
+		ndfs++;
+		dfs(node);
+	}
+	cout<<"There are: "<<nbridges+ndfs<<" SCC and "<<nbridges<<" bridges."<<endl;
+	cout<<"Orientation of each edge: "<<orientation;
+	return 0;
+}

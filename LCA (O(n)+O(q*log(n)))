@@ -1,0 +1,75 @@
+#include <bits/stdc++.h>
+#define mp make_pair
+#define vi vector<int>
+#define vvi vector<vi>
+#define pii pair<int,int>
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define fst first
+#define snd second
+#define pb push_back
+#define sz(x) int(x.size())
+using namespace std;
+int NST,n,m,eusi,reco=0;
+vector<vector<pii>> adj;
+vi euler,h;
+vector<bool> visited;
+vector<pii> ST;
+
+void get_euler(int node){
+	visited[node]=true;
+	euler.pb(node);
+	h.pb(reco);
+	for(auto to:adj[node]){
+		if(!visited[to.fst]) {
+			reco+=to.snd();
+			get_euler(to.fst);
+			reco-=to.snd();
+			euler.pb(node);
+			h.pb(reco);
+		}
+	}
+}
+int izq(int i){
+	return i<<1;
+}
+int der(int i){
+	return i<<1+1;
+}
+pii get_mini(int A,int B,int a,int b,int x){
+	if(B<=a or A>=b) continue;
+	if(a<=A and B<=b) return ST[x];
+	pii ansl=get_mini(A,(A+B)/2,a,b,x*2),ansr=get_mini((A+B)/2,B,a,b,x*2+1);
+	if(ansl.fst<ansr.fst) return ansl;
+	else return ansr;
+}
+int main() {
+	//0 is the root
+	cin>>n>>m;
+	adj.resize(n);
+	visited.resize(n,false);
+	fore(i,0,m) {
+		int x,y,w;
+		cin>>x>>y>>w;
+		adj[x].pb(mp(y,w));
+		adj[y].pb(mp(x,w));
+	}
+	get_euler(0);
+	eusi=sz(euler);
+	vi start(n,-1);
+	fore(i,0,eusi) if(start[euler[i]]==-1) start[euler[i]]=i;
+	NST=1;
+	while(NST<eusi) NST*=2;
+	ST.resize(2*NST);
+	fore(i,NST,2*NST) if(i-NST<eusi) ST[i]=mp(h[i-NST],i-NST);
+					  else ST[i]=mp(INT_MAX,i-NST);
+	for(int i=NST-1;i>=1;i--) {
+		if(ST[izq(i)].fst<ST[der(i).fst]) ST[i]=ST[izq(i)];
+		else ST[i]=ST[der(i)];
+	}
+	int u,v;
+	while(cin>>u and cin>>v){
+		pii ans=get_mini(0,NST,min(start[u],start[v]),max(start[u],start[v])+1,1);
+		cout<<euler[ans.snd];
+	}
+	return 0;
+}

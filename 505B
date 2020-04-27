@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define vi vector<int>
+#define vvi vector<vi>
+#define pii pair<int,int>
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define pb push_back
+#define mp make_pair
+#define snd second
+#define fst first
+using namespace std;
+int n,m;
+bool dp[101][101][101];
+vector<vector<pii>> adj;
+vector<bool> visited;
+void dfs(int root,int node,int p){
+	visited[node]=true;
+	for(auto to:adj[node]){
+		if(p!=-1){
+			if(dp[root][node][to.snd]) dp[root][to.fst][to.snd]=true;
+		}
+		else dp[root][to.fst][to.snd]=true;
+		if(!visited[to.fst]) dfs(root,to.fst,node);
+	}
+}
+int main() {
+	cin>>n>>m;
+	adj.resize(n+1);
+	fore(i,0,m){
+		int x,y,w;
+		cin>>x>>y>>w;
+		adj[x].pb(mp(y,w));
+		adj[y].pb(mp(x,w));
+	}
+	memset(dp,false,sizeof(dp));
+	fore(i,1,n+1) {
+		visited.resize(n+1,false);
+		dfs(i,i,-1);
+	}
+	int q;
+	cin>>q;
+	fore(i,0,q){
+		int x,y;
+		cin>>x>>y;
+		int cont=0;
+		fore(k,1,101) if(dp[x][y][k]) cont++;
+		cout<<cont<<endl;
+	}
+	return 0;
+}

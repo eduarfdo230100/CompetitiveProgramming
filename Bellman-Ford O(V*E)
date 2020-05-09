@@ -1,0 +1,44 @@
+#include <bits/stdc++.h>
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define vi vector<int>
+#define vvi vector<vi>
+#define mp make_pair
+#define ll long long
+#define pb push_back
+#define fst first
+#define snd second
+#define sz(x) int(x.size())
+#define all(x) x.begin(),x.end()
+#define pii pair<int,int>
+using namespace std;
+struct edge{
+    int x,y,w;
+};
+int main() {
+	int N,M;
+	cin>>N>>M;
+	vector<edge> v;
+	fore(i,0,M) {
+	    int x,y,w;
+	    cin>>x>>y>>w;
+	    v.pb({x,y,w});
+	}
+	bool ncycle=false;
+	int root;
+	cin>>root;
+	vi d(N,INT_MAX);
+	d[root]=0;
+	fore(i,0,N) fore(j,0,M) {
+	    if(v[j].x!=INT_MAX){
+	        if(d[v[j].x]+v[j].w<d[v[j].y]){
+	            if(i==N-1) ncycle=true;
+	            d[v[j].y]=d[v[j].x]+v[j].w;
+	        }
+	    }
+	} 
+	if(ncycle) cout<<"It has a negative cycle";
+	else cout<<"It has not a negative cycle"<<endl;
+	fore(i,0,N) if(d[i]==INT_MAX) cout<<"INF"<<"\t";
+	            else cout<<d[i]<<"\t";
+	return 0;
+}

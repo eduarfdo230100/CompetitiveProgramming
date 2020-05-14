@@ -1,0 +1,99 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define mp make_pair
+#define vll vector<ll>
+#define vi vector<int>
+#define vvi vector<vi>
+#define fst first
+#define snd second
+#define sz(x) int(x.size())
+#define all(x) x.begin(),x.end()
+#define pb push_back
+#define pii pair<int,int>
+using namespace std;
+struct trie{
+    trie *ch[2];
+    int cnt=0;
+};
+trie* creation(){
+    trie *p=new trie;
+    p->ch[0]=p->ch[1]=NULL;
+    return p;
+}
+trie* insertion(trie *p,int num){
+    
+    p->ch[num&1]=creation();
+    if(num==1){
+        p->ch[1]->cnt++;
+    }
+    p->ch[num&1]=insertion(p->ch[num&1],num/2);
+    return p;
+}
+trie* trip(trie *p,int num,int pos,ll &value){
+    if(p->ch[!(num&1)]) {
+        value+=(1LL<<pos)*(!(num&1));
+        p->ch[!(num&1)]=trip(p->ch[!(num&1)],num/2,pos+1,value);
+    }
+    else if(p->ch[num&1]) {
+        value+=(1LL<<pos)*(num&1);
+        p->ch[num&1]=trip(p->ch[num&1],num/2,pos+1,value);
+    }
+    return p;
+}
+trie* deletion(trie *p,int value){
+    if(value==0){
+        if(p->cnt>0) p->cnt--;
+        else{
+            if(p->ch[0]==NULL and p->ch[1]==NULL){
+                delete(p);
+                p=NULL;
+            }
+        }
+        return p;
+    }
+    p->ch[value&1]=deletion(p->ch[value&1],value/2);
+    if(p->ch[0]==NULL and p->ch[1]==NULL){
+        delete(p);
+        p=NULL;
+    }
+    return p;
+}
+bool search(trie* p,int value){
+    if(!p->ch[value&1]) return false;
+    if(value==1) {
+        if(p->cnt>0) return true;
+        else return false;
+    }
+    return search(p->ch[value&1],value/2);
+}
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+	int q;
+	cin>>q;
+	trie *root=creation(),*p;
+	p=root->ch[0];
+	fore(i,0,35){
+	    p=creation();
+	    p->cnt++;
+	    p=p->ch[0];
+	}
+	while(q--){
+	    char c;
+	    ll value;
+	    cin>>c>>value;
+	    if(c=='+') root=insertion(root,value);
+	    else if(c=='-') root=deletion(root,value);
+	    else {
+	        ll aux=0;
+	        if(search(root,8)) cout<<"YES"<<endl;
+	        else cout<<"NO"<<endl;
+	        root=trip(root,value,0,aux);
+	        cout<<aux<<endl;
+	        return 0;
+	    }
+	}
+	return 0;
+}

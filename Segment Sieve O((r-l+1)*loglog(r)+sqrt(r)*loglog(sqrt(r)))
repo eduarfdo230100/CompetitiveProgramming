@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define mp make_pair
+#define vll vector<ll>
+#define vi vector<int>
+#define vvi vector<vi>
+#define fst first
+#define snd second
+#define sz(x) int(x.size())
+#define all(x) x.begin(),x.end()
+#define pb push_back
+#define pii pair<int,int>
+#define FIFO ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+#define RFWF freopen("input.txt","r",stdin);freopen("output.txt","w",stdout);
+using namespace std;
+
+int main() {
+	FIFO
+	int l,r;
+	cin>>l>>r;
+	vi ans(r-l+1,1),p(int(sqrt(r)+1),1);
+	for(int i=2;i<=sqrt(r);i++){
+	    if(p[i]) for(int j=i*i;j<=sqrt(r);j+=i) p[j]=0;
+	}
+	p[0]=p[1]=0;
+	fore(i,2,sz(p)){
+    	if(p[i]){
+    	    for(int j=max(i*i,(l+i-1)/i*i);j<=r;j+=i){
+    	        ans[j-l]=0;
+    	    }
+    	}
+	}
+	if(l==1) ans[0]=0;
+	fore(i,0,sz(ans)) if(ans[i]) cout<<i+l<<endl;
+	
+	return 0;
+}

@@ -1,0 +1,70 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define mp make_pair
+#define vll vector<ll>
+#define vi vector<int>
+#define vvi vector<vi>
+#define fst first
+#define snd second
+#define sz(x) int(x.size())
+#define all(x) x.begin(),x.end()
+#define pb push_back}
+#define pii pair<int,int>
+#define FIFO ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+#define RFWF freopen("input.txt","r",stdin);freopen("output.txt","w",stdout);
+using namespace std;
+unsigned ll multilarge(unsigned ll a,unsigned ll b,unsigned ll modu){
+    unsigned ll ans=0;
+    a%=modu;
+    while(b){
+        if(b&1) ans=(ans+a)%modu;
+        a=(2*a)%modu;
+        b>>=1;
+    }
+    return ans;
+}
+unsigned ll bexp(unsigned ll a,unsigned ll b,unsigned ll n){
+    unsigned ll ans=1;
+    while(b){
+        if(b&1) ans=multilarge(ans,a,n);
+        a=multilarge(a,a,n);
+        b>>=1;
+    }
+    return ans;
+}
+bool composite(unsigned ll a,unsigned ll n,int s,unsigned ll d){
+    unsigned ll x=bexp(a,d,n);
+    if(x==1 or x==n-1) return false;
+    fore(i,1,s){
+        x=multilarge(x,x,n);
+        if(x==n-1) return false;
+    }
+    return true;
+}
+bool verif(unsigned ll n){
+    if(n<4) return n==2 or n==3;
+    int s=0;
+    unsigned ll d=n-1;
+    while(!(d&1)){
+        s++;
+        d>>=1;
+    }
+    fore(it,0,100){
+        ll a=2+rand()%(n-3);
+        if(composite(a,n,s,d)) return false;
+    }
+    return true;
+}
+int main() {
+	FIFO
+    int t;
+    cin>>t;
+    while(t--){
+        unsigned ll num;
+        cin>>num;
+        if(verif(num)) cout<<"YES"<<endl;
+        else cout<<"NO"<<endl;
+    }
+	return 0;
+}

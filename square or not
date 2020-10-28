@@ -1,0 +1,63 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define mp make_pair
+#define vll vector<ll>
+#define vvll vector<vll>
+#define vi vector<int>
+#define vvi vector<vi>
+#define fst first
+#define snd second
+#define sz(x) int(x.size())
+#define all(x) x.begin(),x.end()
+#define pb push_back
+#define pii pair<int,int>
+#define FIFO ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+#define RFWF freopen("input.txt","r",stdin);freopen("output.txt","w",stdout);
+using namespace std;
+struct ptos{
+    ll x,y;
+    ptos operator + (const ptos &p) const{
+        return {x+p.x,y+p.y};
+    }
+    ptos operator - (const ptos &p) const{
+        return {x-p.x,y-p.y};
+    }
+    double operator * (const ptos &p) const{
+        return x*p.x+y*p.y;
+    }
+};
+double mod(ptos p){
+    return sqrt(p.x*p.x+p.y*p.y);
+}
+
+bool square(vector<ptos> &p){
+    vi h={1,2,3};
+    do{
+        if(fabs(mod(p[0]-p[h[2]])-mod(p[h[0]]-p[h[1]]))<1e-10 and mod(p[0]-p[h[2]])>1e-8) {
+            if(fabs(mod(p[0]-p[h[0]])-mod(p[h[2]]-p[h[1]]))<1e-10 and mod(p[0]-p[h[0]])>1e-8) {
+                if(fabs(mod(p[0]-p[h[0]])-mod(p[h[2]]-p[0]))<1e-10 and fabs(mod(p[0]-p[h[0]])*sqrt(2)-mod(p[0]-p[h[1]]))<1e-10){
+                    if((p[0]-p[h[2]])*(p[0]-p[h[0]])==0 and (p[h[2]]-p[h[1]])*(p[h[0]]-p[h[1]])==0) return true;
+                }
+            }
+            else if(fabs(mod(p[0]-p[h[1]])-mod(p[h[2]]-p[h[0]]))<1e-10 and mod(p[0]-p[h[1]])>1e-8) {
+                if(fabs(mod(p[0]-p[h[1]])-mod(p[h[2]]-p[0]))<1e-10 and fabs(mod(p[0]-p[h[1]])*sqrt(2)-mod(p[0]-p[h[0]]))<1e-10){
+                    if((p[0]-p[h[1]])*(p[0]-p[h[2]])==0 and (p[h[2]]-p[h[0]])*(p[h[0]]-p[h[1]])==0) return true;
+                }
+            }
+        }
+    }
+    while(next_permutation(all(h)));
+    return false;
+}
+int main() {
+	int n;
+	cin>>n;
+	while(n--){
+	    vector<ptos> v(4);
+	    fore(i,0,4) cin>>v[i].x>>v[i].y;
+        if(square(v)) cout<<"YES"<<endl;
+        else cout<<"NO"<<endl;
+	}
+	return 0;
+}

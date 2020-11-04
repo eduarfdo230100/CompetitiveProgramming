@@ -1,0 +1,84 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define mp make_pair
+#define vll vector<ll>
+#define vvll vector<vll>
+#define vi vector<int>
+#define vvi vector<vi>
+#define fst first
+#define snd second
+#define sz(x) int(x.size())
+#define all(x) x.begin(),x.end()
+#define pb push_back
+#define pii pair<int,int>
+#define FIFO ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+#define RFWF freopen("input.txt","r",stdin);freopen("output.txt","w",stdout);
+using namespace std;
+double EPS=1e-5,pi=acos(-1);
+struct pt{
+    double x,y;
+    pt operator - (const pt &p) const{
+        return {x-p.x,y-p.y};
+    }
+    pt operator + (const pt &p) const{
+        return {x+p.x,y+p.y};
+    }
+    pt operator * (const double &k) const{
+        return {x*k,y*k};
+    }
+    bool operator == (const pt &p) const{
+        if(fabs(x-p.x)<EPS and fabs(y-p.y)<EPS) return true;
+        return false;
+    }
+    bool operator != (const pt &p) const{
+        if(fabs(x-p.x)<EPS and fabs(y-p.y)<EPS) return false;
+        return true;
+    }
+};
+double mod(const pt &a){
+    return sqrt(a.x*a.x+a.y*a.y);
+}
+double cross(const pt &a,const pt &b){
+    return a.x*b.y-a.y*b.x;
+}
+double dot (const pt &a,const pt &b){
+    return a.x*b.x+a.y*b.y;
+}
+pt corte(const pt &a,const pt &b,const pt &c,const pt &d){
+    if(fabs(cross(b-a,d-c))<EPS) return {1e10,1e10};
+    return a+(b-a)*(cross(c-a,d-c)/cross(b-a,d-c));
+}
+double area(const pt &a,const pt &b,const pt &c){
+    return cross(b-a,c-a);
+}
+bool onSegment(const pt &a,const pt &b,const pt &p)
+{
+    return fabs(area(a, b, p)) < EPS && p.x >= min(a.x, b.x) && p.x <= max(a.x, b.x) &&
+    p.y >= min(a.y, b.y) && p.y <= max(a.y, b.y) or p==a or p==b;
+}
+bool intersects(const pt &P1, const pt &P2, const pt &P3, const pt &P4)
+{
+    double A1 = area(P3, P4, P1);
+    double A2 = area(P3, P4, P2);
+    double A3 = area(P1, P2, P3);
+    double A4 = area(P1, P2, P4);
+    if( ((A1 > 0 && A2 < 0) || (A1 < 0 && A2 > 0)) &&
+    ((A3 > 0 && A4 < 0) || (A3 < 0 && A4 > 0)))
+    return true;
+    else if(A1 == 0 && onSegment(P3, P4, P1)) return true;
+    else if(A2 == 0 && onSegment(P3, P4, P2)) return true;
+    else if(A3 == 0 && onSegment(P1, P2, P3)) return true;
+    else if(A4 == 0 && onSegment(P1, P2, P4)) return true;
+    else return false;
+}
+pt rot (const pt &a){
+    return {-a.y,a.x};
+}
+pt proy (const pt &a,const pt &b){
+    return b*(dot(a,b)/(mod(b)*mod(b)));
+}
+int main() {
+
+	return 0;
+}

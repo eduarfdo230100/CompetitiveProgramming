@@ -1,0 +1,78 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define mp make_pair
+#define vll vector<ll>
+#define vvll vector<vll>
+#define vi vector<int>
+#define vvi vector<vi>
+#define fst first
+#define snd second
+#define sz(x) int(x.size())
+#define all(x) x.begin(),x.end()
+#define pb push_back
+#define pii pair<int,int>
+#define FIFO ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+#define RFWF freopen("input.txt","r",stdin);freopen("output.txt","w",stdout);
+using namespace std;
+
+struct pt{
+    int x,y;
+    pt operator - (const pt &p) const{
+        return {x-p.x,y-p.y};
+    }
+    pt operator + (const pt &p) const{
+        return {x+p.x,y+p.y};
+    }
+};
+vector<pt> v,aux;
+double ans=1e18;
+pair<pt,pt> best_pair;
+
+double mod(const pt &a){
+    return sqrt(a.x*a.x+a.y*a.y);
+}
+bool cmp_x(const pt &a,const pt &b){
+    return (a.x<b.x) or (a.x==b.x and a.y<b.y);
+}
+bool cmp_y(const pt &a,const pt &b){
+    return (a.y<b.y);
+}
+void get_d(const pt &a,const pt &b){
+    if(mod(a-b)<ans){
+        ans=mod(a-b);
+        best_pair={a,b};
+    }
+}
+void recu(int l,int r){
+    if(r-l<=3){
+        fore(i,l,r) fore(j,i+1,r) get_d(v[i],v[j]);
+        sort(v.begin()+l,v.begin()+r,cmp_y);
+        return;
+    }
+    int mid=(l+r)/2,midx=v[mid].x;
+    recu(l,mid);
+    recu(mid,r);
+    merge(v.begin()+l,v.begin()+mid,v.begin()+mid,v.begin()+r,aux.begin(),cmp_y);
+    copy(aux.begin(),aux.begin()+r-l,v.begin()+l);
+    int naux=0;
+    fore(i,l,r){
+        if(fabs(v[i].x-midx)<ans){
+            for(int j=naux-1;j>=0 and fabs(v[i].y-aux[j].y)<ans;j--) get_d(v[i],aux[j]);
+            aux[naux++]=v[i];
+        }
+    }
+}
+int main() {
+    int n;
+    cin>>n;
+    v.resize(n);
+    aux.resize(n);
+    fore(i,0,n) cin>>v[i].x>>v[i].y;
+    sort(all(v),cmp_x);
+    recu(0,n);
+    cout<<best_pair.fst.x<<" "<<best_pair.fst.y<<" "<<best_pair.snd.x<<" "<<best_pair.snd.y<<endl;
+    printf("%.5lf\n",ans);
+    
+	return 0;
+}

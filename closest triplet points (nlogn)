@@ -1,0 +1,86 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define mp make_pair
+#define vll vector<ll>
+#define vvll vector<vll>
+#define vi vector<int>
+#define vvi vector<vi>
+#define fst first
+#define snd second
+#define sz(x) int(x.size())
+#define all(x) x.begin(),x.end()
+#define pb push_back
+#define pii pair<int,int>
+#define FIFO ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+#define RFWF freopen("input.txt","r",stdin);freopen("output.txt","w",stdout);
+using namespace std;
+
+struct pt{
+    ll x,y;
+    pt operator - (const pt &p) const{
+        return {x-p.x,y-p.y};
+    }
+    pt operator + (const pt &p) const{
+        return {x+p.x,y+p.y};
+    }
+};
+vector<pt> v,aux;
+double ans;
+pair<pt,pair<pt,pt>> best_trip;
+
+double mod(const pt &a){
+    return sqrt(a.x*a.x+a.y*a.y);
+}
+bool cmp_x(const pt &a,const pt &b){
+    return (a.x<b.x) or (a.x==b.x and a.y<b.y);
+}
+bool cmp_y(const pt &a,const pt &b){
+    return (a.y<b.y);
+}
+void get_p(const pt &a,const pt &b,const pt &c){
+    if(mod(a-b)+mod(a-c)+mod(b-c)<ans){
+        ans=mod(a-b)+mod(a-c)+mod(b-c);
+        best_trip={a,mp(b,c)};
+    }
+}
+void recu(int l,int r){
+    if(r-l<=5){
+        fore(i,l,r) fore(j,i+1,r) fore(k,j+1,r) get_p(v[i],v[j],v[k]);
+        sort(v.begin()+l,v.begin()+r,cmp_y);
+        return;
+    }
+    int mid=(l+r)/2;
+    ll midx=v[mid].x;
+    recu(l,mid);
+    recu(mid,r);
+    merge(v.begin()+l,v.begin()+mid,v.begin()+mid,v.begin()+r,aux.begin(),cmp_y);
+    copy(aux.begin(),aux.begin()+r-l,v.begin()+l);
+    int naux=0;
+    fore(i,l,r){
+        if(fabs(v[i].x-midx)<ans/2){
+            for(int j=naux-1;j>=0 and fabs(v[i].y-aux[j].y)<ans/2;j--){
+                for(int k=j-1;k>=0 and fabs(v[i].y-aux[k].y)<ans/2;k--) get_p(v[i],aux[j],aux[k]);
+            }
+            aux[naux++]=v[i];
+        }
+    }
+}
+int main() {
+    int n;
+    while(cin>>n and n>2){
+        v.clear();
+        aux.clear();
+        ans=1e18;
+        v.resize(n);
+        aux.resize(n);
+        fore(i,0,n) cin>>v[i].x>>v[i].y;
+        sort(all(v),cmp_x);
+        recu(0,n);
+        cout<<best_trip.fst.x<<" "<<best_trip.fst.y<<" "<<best_trip.snd.fst.x<<" "<<best_trip.snd.fst.y<<" ";
+        cout<<best_trip.snd.snd.x<<" "<<best_trip.snd.snd.y<<endl;
+        printf("%.3lf\n",ans);
+    }
+    
+	return 0;
+}

@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define mp make_pair
+#define vll vector<ll>
+#define vvll vector<vll>
+#define vi vector<int>
+#define vvi vector<vi>
+#define fst first
+#define snd second
+#define sz(x) int(x.size())
+#define all(x) x.begin(),x.end()
+#define pb push_back
+#define pii pair<int,int>
+#define FIFO ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+#define RFWF freopen("input.txt","r",stdin);freopen("output.txt","w",stdout);
+using namespace std;
+vi f,h;
+struct edge{
+    int u,v,w,ne;
+    bool operator < (edge &h) {
+        return w<h.w;
+    }
+};
+int fth(int a){
+    if(a==f[a]) return a;
+    return f[a]=fth(f[a]);
+}
+void union_set(int a,int b){
+    int u=fth(a),v=fth(b);
+    if(h[u]<h[v]) swap(u,v);
+    else if(h[u]==h[v]) h[u]++;
+    f[v]=u;
+}
+int main() {
+	int n,m;
+	cin>>n>>m;
+	vector<edge> krusk;
+	fore(i,0,m){
+	    int a,b,c;
+	    cin>>a>>b>>c;
+	    krusk.pb({a,b,c});
+	}
+	sort(all(krusk));
+	f.resize(n+1);
+	h.resize(n+1);
+	fore(i,1,n+1) f[i]=i;
+	int cnt=0;
+	for(auto x:krusk){
+	    if(fth(x.u)!=fth(x.v)){
+	        cnt+=x.w;
+	        union_set(x.u,x.v);
+	    }
+	}
+	cout<<cnt<<endl;
+	
+	return 0;
+}

@@ -1,0 +1,77 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define fore(i,a,b) for(int i=a;i<b;i++)
+#define mp make_pair
+#define vll vector<ll>
+#define vvll vector<vll>
+#define vi vector<int>
+#define vvi vector<vi>
+#define fst first
+#define snd second
+#define sz(x) int(x.size())
+#define all(x) x.begin(),x.end()
+#define pb push_back
+#define pii pair<int,int>
+#define FIFO ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+#define RFWF freopen("input.txt","r",stdin);freopen("output.txt","w",stdout);
+using namespace std;
+int maxn=(1<<20),maxlog=20,n;
+vvi adj(maxn),st(maxn,vi(maxlog));
+vi H(maxn),F(maxn);
+vector<bool> used(maxn,false);
+void dfs(int nd,int h){
+    used[nd]=true;
+    H[nd]=h;
+    for(auto to:adj[nd]){
+        if(!used[to]){
+            F[to]=nd;
+            dfs(to,h+1);
+        }
+    }
+}
+void st_compute(){
+    fore(j,0,maxlog){
+        fore(i,0,n){
+            if(j==0) st[i][j]=F[i];
+            else st[i][j]=st[st[i][j-1]][j-1];
+        }
+    }
+}
+int lca(int a,int b){
+    if(abs(H[a]-H[b])>0){
+        if(H[a]>H[b]) swap(a,b);
+        int difh=H[b]-H[a],i=0;
+        while(difh){
+            if(difh%2) b=st[b][i];
+            difh/=2;
+            i++;
+        }
+    }
+    if(a==b) return a;
+    for(int i=maxlog-1;i>=0;i--){
+        if(st[a][i]!=st[b][i]){
+            a=st[a][i];
+            b=st[b][i];
+        }
+    }
+    return F[a];
+}
+int main() {
+	cin>>n;
+	fore(i,0,n-1){
+	    int x,y;
+	    cin>>x>>y;
+	    adj[x].pb(y);
+	    adj[y].pb(x);
+	}
+	dfs(0,0);
+	st_compute();
+	int q;
+	cin>>q;
+	while(q--){
+	    int a,b;
+	    cin>>a>>b;
+	    cout<<lca(a,b)<<endl;
+	}
+	return 0;
+}
